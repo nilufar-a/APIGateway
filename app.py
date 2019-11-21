@@ -27,7 +27,7 @@ def login():
 
 
 @app.route("/logout", methods=['POST'])
-def forgot():
+def logout():
     token = request.form.get('token')
     response = requests.post(authentication_url + "logout", data={'token': token})
     return str(response.status_code)
