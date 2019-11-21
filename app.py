@@ -13,6 +13,8 @@ game_engine_url = ""
 scores_leader_url = ""
 match_making_url = ""
 map_editor_url = ""
+ai_1_url = "https://ai1-dot-trainingprojectlab2019.appspot.com/rest/aistart/"
+ai_2_url = ""
 
 # ______________________________AUTHETICATION_____________________________________________
 @app.route("/login", methods=['POST'])
@@ -24,24 +26,14 @@ def login():
     return str(response.status_code)
 
 
-@app.route("/forgotPassword", methods=['POST'])
+@app.route("/logout", methods=['POST'])
 def forgot():
-    username = request.form.get('username')
-    response = requests.post(authentication_url + "forgotPassword", data={'username': username})
-    return str(response.status_code)
-
-
-@app.route("/changePassword", methods=['POST'])
-def change():
     token = request.form.get('token')
-    oldpassword = request.form.get('oldpassword')
-    newpassword = request.form.get('newpassword')
-    response = requests.post(authentication_url + "changePassword", data={'token': token, 'oldpassword': oldpassword, 'newpassword': newpassword})
+    response = requests.post(authentication_url + "logout", data={'token': token})
     return str(response.status_code)
-
 
 @app.route("/registerUser", methods=['POST'])
-def register():
+def register_user():
     username = request.form.get('username')
     password = request.form.get ('password')
     email = request.form.get('email')
@@ -49,18 +41,41 @@ def register():
 
     return str(response.status_code)
 
-
 @app.route("/checkToken", methods=['POST'])
-def checkToken():
+def check_token():
     token = request.form.get('token')
     response = requests.post (authentication_url + "checkToken", data={'token': token})
+
     return str(response.status_code)
+
+@app.route("/registerAI", methods=['POST'])
+def register_ai():
+    username = request.form.get('username')
+    token = request.form.get('token')
+    response = requests.post(authentication_url + "registerAI", data={'username': username, 'token': token})
+
+    return str(response.status_code)
+
+
+@app.route("/deleteUser", methods=['DELETE'])
+def delete_user():
+    token = request.form.get('token')
+    response = requests.post(authentication_url + "deleteUser", data={'token': token})
+
+    return str(response.status_code)
+
 
 # ______________________________MAP_EDITOR_____________________________________________-
 
-@app.route('/getMaps/<numberofPlayer>', methods=['GET'])
+@app.route('/getMap', methods=['GET'])
+def getMap():
+    mapid = request.args.get('mapid')
+    response= requests.get(map_editor_url +"getMap",data={'mapid': mapid})
+    return str(response.status_code)
+
+@app.route('/getMapsWithXPlayers/<numberofPlayer>', methods=['GET'])
 def getMaps(numberofPlayer):
-   response= requests.get(map_editor_url +"getMaps",data={'NumberOfPlayers': numberofPlayer})
+   response= requests.get(map_editor_url +"getMaps", data={'NumberOfPlayers': numberofPlayer})
    return str(response.status_code)
 
 @app.route('/getAllMaps', methods=['GET'])
@@ -93,6 +108,7 @@ def deleteMap():
 def PutCreateGame():
     UserID = request.form.get('UserID')
     response = requests.put(match_making_url +"PutCreateGame", data={'UserID': UserID})
+
     return str(response.status_code)
 
 @app.route("/JoinGame", methods=['POST'])
@@ -100,6 +116,7 @@ def joinGame():
     GameID = request.form.get('GameID')
     UserID = request.form.get('UserID')
     response = requests.post(match_making_url + "JoinGame", data={'GameID': GameID,'UserID': UserID})
+
     return str(response.status_code)
 
 @app.route("/PostChangeColor", methods=['POST'])
@@ -107,6 +124,7 @@ def changeColor():
     color = request.form.get('color')
     UserID = request.form.get('UserID')
     response = requests.post(match_making_url + "PostChangeColor", data={'color': color,'UserID': UserID})
+
     return str(response.status_code)
 
 
@@ -114,6 +132,7 @@ def changeColor():
 def lobbyState():
     GameID = request.form.get('GameID')
     response = requests.get(match_making_url + "GetLobbyState", data={'GameID': GameID})
+
     return str(response.status_code)
 
 
@@ -122,7 +141,25 @@ def addAI1():
     GameID = request.form.get('GameID')
     AIPlayerID = request.form.get('AIPlayerID')
     response = requests.post(match_making_url + "PostAddAI1", data={'GameID': GameID,'AIPlayerID': AIPlayerID})
+
     return str(response.status_code)
+
+@app.route("/PostAddAI2", methods=['POST'])
+def addAI2():
+    GameID = request.form.get('GameID')
+    AIPlayerID = request.form.get('AIPlayerID')
+    response = requests.post(match_making_url + "PostAddAI1", data={'GameID': GameID,'AIPlayerID': AIPlayerID})
+
+    return str(response.status_code)
+
+@app.route("/PostChangeNumofPlayers", methods=['POST'])
+def changeHost():
+    NumofPlayers = request.form.get('NumofPlayers')
+    UserID = request.form.get('UserID')
+    response = requests.post(match_making_url + "PostChangeNumofPlayers", data={'NumofPlayers': NumofPlayers, 'UserID': UserID})
+
+    return str(response.status_code)
+
 
 @app.route("/PostKickPlayer", methods=['POST'])
 def kickPlayer():
@@ -130,11 +167,6 @@ def kickPlayer():
     response = requests.post(match_making_url + "PostKickPlayer", data={'PlayerID': PlayerID})
     return str(response.status_code)
 
-@app.route("/PostChangeHost", methods=['POST'])
-def changeHost():
-    GameID = request.form.get('GameID')
-    response = requests.post(match_making_url + "PostChangeHost", data={'GameID': GameID})
-    return str(response.status_code)
 
 @app.route("/PostIAmReady", methods=['POST'])
 def iamready():
@@ -174,8 +206,7 @@ def currentState():
 @app.route("/CreateGame", methods=['POST'])
 def createGame():
     GameID = request.form.get('GameID')
-    ListOfUserIDs  = request.form.get('ListOfUserIDs')
-    response = requests.post(game_engine_url + "CreateGame", data={'GameID': GameID,'ListOfUserIDs': ListOfUserIDs})
+    response = requests.post(game_engine_url + "CreateGame", data={'GameID': GameID})
 
     return str(response.status_code)
 
@@ -223,6 +254,28 @@ def leaderboardTimePlayed():
 @app.route("/DeletePlayer", methods=['DELETE'])
 def deletePlayer():
     response = requests.delete(scores_leader_url + "DeletePlayer")
+    return str(response.status_code)
+
+# ____________________________________AI-1____________________
+@app.route("/ai-bot", methods=['POST'])
+def bot1():
+    userID = request.form.get('userID')
+    gameID = request.form.get('gameID')
+    token = request.form.get('token')
+
+    response = requests.post(ai_1_url + "/ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
+
+    return str(response.status_code)
+
+# ____________________________________AI-2______________________________
+@app.route("/ai-bot", methods=['POST'])
+def bot2():
+    userID = request.form.get('userID')
+    gameID = request.form.get('gameID')
+    token = request.form.get('token')
+
+    response = requests.post(ai_2_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
+
     return str(response.status_code)
 
 if __name__ == '__main__':
