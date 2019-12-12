@@ -7,7 +7,7 @@ authentication_url = "https://userauth-dot-trainingprojectlab2019.appspot.com/"
 scores_leader_url = "https://scores-and-leaderboards-dot-trainingprojectlab2019.appspot.com/"
 map_editor_url = "https://mapeditor-dot-trainingprojectlab2019.appspot.com/"
 game_engine_url = "https://game-engine-devs-dot-trainingprojectlab2019.appspot.com/"
-ai_1_url = "https://ai1-dot-trainingprojectlab2019.appspot.com/rest/aistart/"
+ai_1_url = "https://ai1-dot-trainingprojectlab2019.appspot.com/"
 ai_2_url = "https://ai2-dot-trainingprojectlab2019.appspot.com/"
 
 app = Flask(__name__)
@@ -79,8 +79,8 @@ def registerGame():
 
 @app.route("/GetLeaderBoardX", methods=['GET'])
 def getLeaderBoardX():
-
-    response = requests.get(scores_leader_url + "GetLeaderBoardX")
+    boardName = request.args.get('boardName')
+    response = requests.get(scores_leader_url + "GetLeaderBoardX",params={'boardName': boardName})
 
     return json.dumps({"response": response.json(), "status": response.status_code})
 
