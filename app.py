@@ -263,7 +263,7 @@ def bot1():
 
     response = requests.post(ai_1_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
 
-    return json.dumps({"response": response.json(), "status": response.status_code})
+    return json.dumps({"response": response.text, "status": response.status_code})
 
 # ____________________________________AI-2______________________________
 @app.route("/ai-bot-2", methods=['POST'])
