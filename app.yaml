@@ -1,9 +1,3 @@
 runtime: python37
-env: standard
-handlers:
-  - url: /.*
-    script: auto
 
-runtime_config:
-  python_version: 3
   
