@@ -162,7 +162,7 @@ def bot1():
     gameID = request.form.get('gameID')
     token = request.form.get('token')
 
-    response = requests.post(ai_1_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
+    response = requests.post(ai_1_url + "ai-bot",headers={"Content-Type": "application/json"}, data={'userID': userID,'gameID': gameID,'token': token})
 
     return json.dumps({"response": response.json(), "status": response.status_code})
 
@@ -173,6 +173,6 @@ def bot2():
     gameID = request.form.get('gameID')
     token = request.form.get('token')
 
-    response = requests.post(ai_2_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
+    response = requests.post(ai_1_url + "ai-bot",headers={"Content-Type": "application/json"}, data={'userID': userID,'gameID': gameID,'token': token})
 
     return json.dumps({"response": response.json(), "status": response.status_code})
