@@ -16,6 +16,7 @@ app = Flask(__name__)
 def hello():
     return "This is our game"
 
+
 @app.route('/<string:page_name>/')
 def render_static(page_name):
     return render_template('%s.html' % page_name)
@@ -260,10 +261,8 @@ def bot1():
     userID = request.form.get('userID')
     gameID = request.form.get('gameID')
     token = request.form.get('token')
-
-    response = requests.post(ai_1_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
-
-    return json.dumps({"response": response.text, "status": response.status_code})
+    response = requests.post(ai_1_url + "ai-bot", json={'userID': userID,'gameID': gameID,'token': token})
+    return json.dumps({"response": response.json(),"status": response.status_code})
 
 # ____________________________________AI-2______________________________
 @app.route("/ai-bot-2", methods=['POST'])
@@ -271,7 +270,5 @@ def bot2():
     userID = request.form.get('userID')
     gameID = request.form.get('gameID')
     token = request.form.get('token')
-
-    response = requests.post(ai_1_url + "ai-bot", data={'userID': userID,'gameID': gameID,'token': token})
-
-    return json.dumps({"response": response.text, "status": response.status_code})
+    response = requests.post(ai_1_url + "ai-bot", json={'userID': userID, 'gameID': gameID, 'token': token})
+    return json.dumps({"response": response.json(), "status": response.status_code})
