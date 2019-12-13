@@ -104,7 +104,7 @@ def getMap():
 @app.route('/getMapsWithXPlayers/<NumberofPlayers>', methods=['GET'])
 def getMapsWithXPlayers(NumberofPlayers):
    response= requests.get(map_editor_url +"getMaps", params={'NumberOfPlayers': NumberofPlayers})
-   return json.dumps({"response": response.json(), "status": response.status_code})
+   return json.dumps({"response": response.text, "status": response.status_code})
 
 @app.route('/isNameOccupied', methods=['GET'])
 def isNameOccupied():
@@ -148,14 +148,14 @@ def postMove():
 def currentState():
     GameID = request.args.get('GameID')
     response = requests.get(game_engine_url + "getcurrentStateOfMOdel", params={'GameID': GameID})
-    return json.dumps({"response": response.json(), "status": response.status_code})
+    return json.dumps({"response": response.text, "status": response.status_code})
 
 @app.route("/PostCreateGame", methods=['POST'])
 def createGame():
     GameID = request.args.get('GameID')
     response = requests.post(game_engine_url + "PostCreateGame", params={'GameID': GameID})
 
-    return json.dumps({"response": response.json(), "status": response.status_code})
+    return json.dumps({"response": response.text, "status": response.status_code})
 # ____________________________________Matchmaking____________________
 @app.route("/PutCreateGame", methods=['PUT'])
 def putcreategame():
